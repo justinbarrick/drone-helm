@@ -4,6 +4,7 @@ pipeline:
   docker-build:
     image: plugins/docker:linux-arm
     repo: justinbarrick/drone-helm
+    pull_image: false
     tags: 
       - latest
       - k1.8.1-h2.7.0
