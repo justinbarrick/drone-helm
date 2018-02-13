@@ -1,7 +1,7 @@
 #
 # ----- Go Builder Image ------
 #
-FROM alexellis2/go-armhf:1.8.4 AS builder
+FROM alexellis2/go-armhf:1.8.4
 
 RUN apk add --no-cache git
 
@@ -49,7 +49,7 @@ RUN set -ex \
 LABEL description="Kubectl and Helm."
 LABEL base="alpine"
 
-COPY --from=builder /drone-helm /bin/drone-helm
+COPY --from=0 /drone-helm /bin/drone-helm
 COPY kubeconfig /root/.kube/kubeconfig
 
 ENTRYPOINT [ "/bin/drone-helm" ]
