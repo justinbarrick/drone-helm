@@ -25,6 +25,8 @@ pipeline:
       - docker --config configs manifest annotate justinbarrick/drone-helm:latest quay.io/ipedrazas/drone-helm:latest --arch amd64
       - docker --config configs manifest push justinbarrick/drone-helm:latest
     secrets: [ DOCKER_USERNAME, DOCKER_PASSWORD ]
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
     when:
       branch: [master]
 
