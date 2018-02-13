@@ -6,9 +6,24 @@ pipeline:
     repo: justinbarrick/drone-helm
     pull_image: false
     tags: 
-      - latest
+      - arm
       - k1.8.1-h2.7.0
       - ${DRONE_BRANCH}-${DRONE_COMMIT_SHA:0:7}
+    secrets: [ DOCKER_USERNAME, DOCKER_PASSWORD ]
+    when:
+      branch: [master]
+
+  manifest:
+    image: docker:18.02.0-ce
+    commands:
+      - env
+      - docker login
+      - mkdir configs
+      - echo '{"experimental":"enabled"}' > configs/config.json
+      - docker --config configs manifest create justinbarrick/drone-helm:latest quay.io/ipedrazas/drone-helm:latest justinbarrick/drone-helm:arm
+      - docker --config configs manifest annotate justinbarrick/drone-helm:latest justinbarrick/drone-helm:arm --arch arm
+      - docker --config configs manifest annotate justinbarrick/drone-helm:latest quay.io/ipedrazas/drone-helm:latest --arch amd64
+      - docker --config configs manifest push justinbarrick/drone-helm:latest
     secrets: [ DOCKER_USERNAME, DOCKER_PASSWORD ]
     when:
       branch: [master]
