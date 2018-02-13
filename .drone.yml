@@ -13,13 +13,28 @@ pipeline:
     when:
       branch: [master]
 
+#  manifest:
+#    image: justinbarrick/manifest-tool
+#    repo: justinbarrick/drone-helm
+#    tag: latest
+#    images:
+#      - repo: justinbarrick/drone-helm
+#        tag: arm
+#        annotations:
+#          arm: arm
+#      - repo: quay.io/ipedrazas/drone-helm
+#        tag: latest
+#        annotations:
+#          arm: amd64
+        
   manifest:
     image: docker:18.02.0-ce
+    secrets: [ DOCKER_USERNAME, DOCKER_PASSWORD ]
     commands:
       - env
       - docker login
-      - mkdir configs
-      - echo '{"experimental":"enabled"}' > configs/config.json
+      - mkdir .docker
+      - echo '{"experimental":"enabled"}' > .docker/config.json
       - docker --config configs manifest create justinbarrick/drone-helm:latest quay.io/ipedrazas/drone-helm:latest justinbarrick/drone-helm:arm
       - docker --config configs manifest annotate justinbarrick/drone-helm:latest justinbarrick/drone-helm:arm --arch arm
       - docker --config configs manifest annotate justinbarrick/drone-helm:latest quay.io/ipedrazas/drone-helm:latest --arch amd64
